@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Authentication</title>
+</head>
+<body>
+    <h1 style="text-align: center;">Student Scholarship</h1>
+    <h1>Login</h1>
+    <form id="loginForm">
+        <label for="loginUsername">Username:</label>
+        <input type="text" id="loginUsername" name="username" required>
+        <label for="loginPassword">Password:</label>
+        <input type="password" id="loginPassword" name="password" required>
+        <button type="submit">Login</button>
+    </form>
+    <div id="loginMessage"></div>
+
+    <h1>Register</h1>
+    <form id="registerForm">
+        <label for="registerUsername">Username:</label>
+        <input type="text" id="registerUsername" name="username" required>
+        <label for="registerPassword">Password:</label>
+        <input type="password" id="registerPassword" name="password" required>
+        <button type="submit">Register</button>
+    </form>
+    <div id="registerMessage">
+    <script>
+    document.getElementById("loginForm").addEventListener("submit", function(event) {
+    event.preventDefault();
+    const username = document.getElementById("loginUsername").value;
+    const password = document.getElementById("loginPassword").value;
+
+    fetch("http://localhost:8080/api/auth/login", {
+        method: "POST",
+        headers: {
+            "Content-Type": "application/json"
+        },
+        body: JSON.stringify({ username: username, password: password })
+    })
+    .then(response => response.text())
+    .then(data => {
+        const loginMessage = document.getElementById("loginMessage");
+        loginMessage.innerText = data;
+        if (data === "Login successful!") {
+            loginMessage.style.color = "green";
+        } else {
+            loginMessage.style.color = "red";
+        }
+    })
+    .catch(error => {
+        console.error("Error:", error);
+        const loginMessage = document.getElementById("loginMessage");
+        loginMessage.innerText = "An error occurred during login.";
+        loginMessage.style.color = "red";
+    });
+});
+
+document.getElementById("registerForm").addEventListener("submit", function(event) {
+    event.preventDefault();
+    const username = document.getElementById("registerUsername").value;
+    const password = document.getElementById("registerPassword").value;
+
+    fetch("http://localhost:8080/api/auth/register", {
+        method: "POST",
+        headers: {
+            "Content-Type": "application/json"
+        },
+        body: JSON.stringify({ username: username, password: password })
+    })
+    .then(response => response.json())
+    .then(data => {
+        const registerMessage = document.getElementById("registerMessage");
+        registerMessage.innerText = "User registered successfully!";
+        registerMessage.style.color = "green";
+    })
+    .catch(error => {
+        console.error("Error:", error);
+        const registerMessage = document.getElementById("registerMessage");
+        registerMessage.innerText = "An error occurred during registration.";
+        registerMessage.style.color = "red";
+    });
+});
+
+    </script>    
+</body>
+</html>
